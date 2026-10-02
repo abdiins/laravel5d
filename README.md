@@ -1,70 +1,68 @@
-# LokalBites — Platform Pemesanan Makanan & Katering UMKM Lokal
+# LokalBites — Local MSME Food & Catering Ordering Platform
 
-> Proyek Praktikum Pemrograman Berorientasi Objek 2 (PBO 2) — Program Studi Teknik Informatika
-
-| Informasi Mahasiswa | |
+| Student Information | |
 |---|---|
-| **Nama** | Muhammad Abdi Nur Salam |
+| **Student** | Muhammad Abdi Nur Salam |
 | **NPM** | 2410010482 |
-| **Kelas** | TI 5C REG BJB |
-| **Dosen Pengampu** | Mirza Yogy Kurniawan, M.Kom |
-| **Repository Asli** | [mirzayogy/laravel5d](https://github.com/mirzayogy/laravel5d) |
+| **Class** | TI 5C REG BJB |
+| **Lecturer** | Mirza Yogy Kurniawan, M.Kom |
+| **Upstream Repository** | [mirzayogy/laravel5d](https://github.com/mirzayogy/laravel5d) |
 | **Fork Repository** | [abdiins/laravel5d](https://github.com/abdiins/laravel5d) |
-| **Branch Tugas** | `feature/database-relations` |
+| **Branch** | `feature/database-relations` |
 
 ---
 
-## 📌 Deskripsi Proyek
-**LokalBites** adalah platform web berbasis Laravel yang dirancang untuk mendigitalkan pemesanan makanan dan layanan katering bagi pelaku UMKM kuliner lokal. Sistem ini memfasilitasi transaksi antara pelanggan dengan warung makan lokal, mulai dari penjelajahan menu, pemesanan kustom (*notes/spesifikasi khusus*), pelacakan pesanan, hingga pemberian ulasan (*rating & review*).
+## 📌 Project Overview
+**LokalBites** is a Laravel-based web platform designed to digitize food ordering and catering services for local culinary micro, small, and medium enterprises (MSMEs). The system streamlines transactions between customers and local eateries, enabling menu browsing, custom order instructions (*special notes*), order tracking, and customer reviews (*ratings & feedback*).
 
 ---
 
-## 🗄️ Rancangan Basis Data & Relasi Eloquent
-Struktur database mencakup 9 tabel entitas dan 2 tabel pivot yang mendemonstrasikan seluruh tipe relasi objek:
+## 🗄️ Database Design & Eloquent Relationships
+The database schema consists of 9 entity tables and 2 pivot tables demonstrating all primary object-relational mapping (ORM) relationships:
 
 1. **One-to-One:**
-   - `User` $\leftrightarrow$ `CustomerProfile`
-   - `User` $\leftrightarrow$ `Merchant`
-   - `Order` $\leftrightarrow$ `Review`
+   - `User` $\leftrightarrow$ `CustomerProfile` (Customer delivery address and contact details)
+   - `User` $\leftrightarrow$ `Merchant` (Store profile owned and managed by the merchant user)
+   - `Order` $\leftrightarrow$ `Review` (Each completed order can receive exactly one review)
 2. **One-to-Many:**
-   - `Category` $\to$ `Menus`
-   - `Merchant` $\to$ `Menus`
-   - `User` (Customer) $\to$ `Orders`
-   - `Merchant` $\to$ `Orders`
-   - `Merchant` $\to$ `Reviews`
+   - `Category` $\to$ `Menus` (Categories classify multiple menus)
+   - `Merchant` $\to$ `Menus` (Merchants offer multiple menus)
+   - `User` (Customer) $\to$ `Orders` (Customers can place multiple orders)
+   - `Merchant` $\to$ `Orders` (Merchants receive multiple incoming orders)
+   - `Merchant` $\to$ `Reviews` (Merchants receive customer reviews)
 3. **Many-to-Many:**
-   - `Menu` $\leftrightarrow$ `Tag` via `menu_tag` (Halal, Pedas, Khas Banjar, Best Seller)
+   - `Menu` $\leftrightarrow$ `Tag` via `menu_tag` (Dietary and promotional tags: Halal, Spicy, Local Special, Best Seller)
 4. **Many-to-Many (with Pivot Data):**
-   - `Order` $\leftrightarrow$ `Menu` via `order_items` dengan atribut pivot: `quantity`, `unit_price`, `subtotal`, `special_notes`
+   - `Order` $\leftrightarrow$ `Menu` via `order_items` with custom pivot attributes: `quantity`, `unit_price`, `subtotal`, and `special_notes`
 5. **Has-Many-Through:**
-   - `Merchant` $\to$ `OrderItems` (melalui model `Menu`)
-   - `User` $\to$ `OrderItems` (melalui model `Order`)
+   - `Merchant` $\to$ `OrderItems` (through the `Menu` model — allowing merchants to track all sold items)
+   - `User` $\to$ `OrderItems` (through the `Order` model — allowing customers to view all purchased food items)
 
-Detail diagram ERD dapat dilihat pada dokumen: **[`docs/database/erd.md`](docs/database/erd.md)**.
+For the complete schema diagram and details, see: **[`docs/database/erd.md`](docs/database/erd.md)**.
 
 ---
 
-## 🚀 Panduan Menjalankan Proyek Secara Lokal
+## 🚀 Local Development Setup
 
 ```bash
-# 1. Clone repository
+# 1. Clone the repository
 git clone https://github.com/abdiins/laravel5d.git
 cd laravel5d
 
-# 2. Install dependensi PHP & Node
+# 2. Install PHP & Node dependencies
 composer install
 npm install
 
-# 3. Konfigurasi Environment & Key
+# 3. Environment configuration & application key
 cp .env.example .env
 php artisan key:generate
 
-# 4. Migrasi & Isi Data Awal (Seed)
+# 4. Run database migrations & seed demo data
 php artisan migrate:fresh --seed
 
-# 5. Jalankan server lokal
+# 5. Start development servers
 npm run dev           # Terminal 1
 php artisan serve     # Terminal 2
 ```
 
-Buka **http://localhost:8000** pada browser.
+Access the application at **http://localhost:8000** in your browser.

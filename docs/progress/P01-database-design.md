@@ -2,50 +2,54 @@
 
 | | |
 |---|---|
-| **Mahasiswa** | Muhammad Abdi Nur Salam |
-| **NPM** | 2410010482 |
-| **Kelas** | TI 5C REG BJB |
-| **Proyek** | **LokalBites** (Platform Pemesanan Makanan & Katering UMKM Lokal) |
+| **Student** | Muhammad Abdi Nur Salam |
+| **Student ID (NPM)** | 2410010482 |
+| **Class** | TI 5C REG BJB |
+| **Project** | **LokalBites** (Local MSME Food & Catering Platform) |
 | **Status** | ✅ Done |
 | **Branch** | `feature/database-relations` |
 | **Pull Request** | <https://github.com/mirzayogy/laravel5d/pull/6> |
 
+---
+
 ## Goal
-Merancang dan mengimplementasikan basis data relasional untuk platform **LokalBites** menggunakan Eloquent ORM di Laravel 11/12, mencakup seluruh jenis relasi: One-to-One, One-to-Many, Many-to-Many, Many-to-Many dengan data pivot tambahan, serta Has-Many-Through.
-
-## Jobs
-
-| Code | Job | Status | Completed | Proof |
-|---|---|---|---|---|
-| J1 | Database design and ERD dengan Mermaid | ✅ Done | 2026-10-02 | [`docs/database/erd.md`](../database/erd.md) |
-| J2 | Migrations: 9 tabel entitas & 2 pivot table | ✅ Done | 2026-10-02 | [`database/migrations`](../../database/migrations) |
-| J3 | Eloquent Models and Relationships | ✅ Done | 2026-10-02 | [`app/Models`](../../app/Models) |
-| J4 | Factories and Seeders | ✅ Done | 2026-10-02 | [`database/factories`](../../database/factories), [`database/seeders`](../../database/seeders) |
-| J5 | Documentation and Verification | ✅ Done | 2026-10-02 | [`README.md`](../../README.md) |
+Design and implement the relational database schema for the **LokalBites** platform using Laravel's Eloquent ORM. The implementation covers all primary relationship categories: One-to-One, One-to-Many, Many-to-Many, Many-to-Many with custom pivot attributes, and Has-Many-Through.
 
 ---
 
-### J1: Database design and ERD
+## Milestone Jobs
+
+| Code | Job | Status | Completed | Proof |
+|---|---|---|---|---|
+| J1 | Database Design & Mermaid ERD | ✅ Done | 2026-10-02 | [`docs/database/erd.md`](../database/erd.md) |
+| J2 | Migrations (9 Tables + 2 Pivot Tables) | ✅ Done | 2026-10-02 | [`database/migrations`](../../database/migrations) |
+| J3 | Eloquent Models & Relationships | ✅ Done | 2026-10-02 | [`app/Models`](../../app/Models) |
+| J4 | Model Factories & Seeders | ✅ Done | 2026-10-02 | [`database/factories`](../../database/factories), [`database/seeders`](../../database/seeders) |
+| J5 | Documentation & Verification | ✅ Done | 2026-10-02 | [`README.md`](../../README.md) |
+
+---
+
+### J1: Database Design and ERD
 - **Status:** ✅ Done
-- **Penjelasan:** Merancang skema transaksi pemesanan kuliner UMKM lokal dengan 9 tabel utama dan relasi yang saling terhubung secara terstruktur.
+- **Summary:** Engineered a relational architecture supporting MSME food ordering and catering workflows. Encompasses 9 entity tables and 2 pivot tables with clear relationship demarcations.
 - **Proof:** [`docs/database/erd.md`](../database/erd.md)
 
 ### J2: Migrations
 - **Status:** ✅ Done
-- **Penjelasan:** Membuat 9 berkas migrasi lengkap dengan foreign key constraint, cascade onDelete, restrict onDelete, dan unique key.
+- **Summary:** Created 9 clean migration files with foreign key constraints, `cascadeOnDelete`, `restrictOnDelete`, and unique indexing.
 - **Proof:** [`database/migrations`](../../database/migrations)
-- **Verifikasi:** Perintah `php artisan migrate:fresh --seed` berjalan 100% lancar tanpa error.
+- **Verification:** Command `php artisan migrate:fresh --seed` executes with 0 errors.
 
-### J3: Models and relationships
+### J3: Models and Relationships
 - **Status:** ✅ Done
-- **Penjelasan:** Membuat model Eloquent: `User`, `CustomerProfile`, `Merchant`, `Category`, `Menu`, `Tag`, `Order`, `OrderItem`, `Review`.
+- **Summary:** Created Eloquent models: `User`, `CustomerProfile`, `Merchant`, `Category`, `Menu`, `Tag`, `Order`, `OrderItem`, `Review`. All relationships include appropriate casts and inverse definitions.
 - **Proof:** [`app/Models`](../../app/Models)
 
-### J4: Factories and seeders
+### J4: Factories and Seeders
 - **Status:** ✅ Done
-- **Penjelasan:** Membuat factory lengkap untuk setiap model, serta seeder realistis kuliner khas Banjar (Soto Banjar, Nasi Kuning, Wadai Bingka, Amparan Tatak, Es Limau Kuit).
+- **Summary:** Created model factories with realistic Faker definitions, and implemented seeders with authentic Banjar regional culinary data (*Soto Banjar*, *Nasi Kuning Haruan*, *Wadai Bingka*, *Amparan Tatak*, *Es Limau Kuit*).
 - **Proof:** [`database/seeders/DatabaseSeeder.php`](../../database/seeders/DatabaseSeeder.php)
 
 ### J5: Documentation and Verification
 - **Status:** ✅ Done
-- **Verifikasi:** Pengujian otomatis dengan `php artisan test` berhasil lulus (**Passed**).
+- **Summary:** Comprehensive English documentation, local development setup instructions, and verified test passes (`php artisan test`).

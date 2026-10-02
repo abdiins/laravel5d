@@ -6,29 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('habits', function (Blueprint $table) {
+        Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('merchant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->constrained()->restrictOnDelete();
             $table->string('name');
+            $table->string('slug');
             $table->text('description')->nullable();
-            $table->unsignedInteger('target_count')->default(1);
-            $table->string('unit')->default('times');
-            $table->boolean('is_active')->default(true);
+            $table->decimal('price', 12, 2);
+            $table->string('image')->nullable();
+            $table->boolean('is_available')->default(true);
+            $table->integer('preparation_time_minutes')->default(15);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('habits');
+        Schema::dropIfExists('menus');
     }
 };

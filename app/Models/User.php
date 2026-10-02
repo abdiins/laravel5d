@@ -2,30 +2,28 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -36,31 +34,26 @@ class User extends Authenticatable
 
     public function profile(): HasOne
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(CustomerProfile::class);
     }
 
-    public function habits(): HasMany
+    public function merchant(): HasOne
     {
-        return $this->hasMany(Habit::class);
+        return $this->hasOne(Merchant::class);
     }
 
-    public function habitLogs(): HasManyThrough
+    public function orders(): HasMany
     {
-        return $this->hasManyThrough(HabitLog::class, Habit::class);
+        return $this->hasMany(Order::class);
     }
 
-    public function moodEntries(): HasMany
+    public function reviews(): HasMany
     {
-        return $this->hasMany(MoodEntry::class);
+        return $this->hasMany(Review::class);
     }
 
-    public function journalEntries(): HasMany
+    public function orderItems(): HasManyThrough
     {
-        return $this->hasMany(JournalEntry::class);
-    }
-
-    public function achievements(): BelongsToMany
-    {
-        return $this->belongsToMany(Achievement::class)->withPivot('earned_at');
+        return $this->hasManyThrough(OrderItem::class, Order::class);
     }
 }

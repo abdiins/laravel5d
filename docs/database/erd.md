@@ -1,143 +1,157 @@
-# Database Design — Entity Relationship Diagram
+# Database Design — Entity Relationship Diagram (LokalBites)
 
-This document describes the database schema of **Habitude** and every Eloquent relationship used in the project.
+Dokumen ini menjelaskan skema basis data dan perancangan relasi Eloquent ORM untuk platform **LokalBites** (Platform Pemesanan Makanan & Katering UMKM Lokal).
 
-## 1. Entity Relationship Diagram
+---
+
+## 1. Entity Relationship Diagram (ERD)
 
 ```mermaid
 erDiagram
-    USERS ||--o| PROFILES : "has one"
-    USERS ||--o{ HABITS : "owns"
-    USERS ||--o{ MOOD_ENTRIES : "records"
-    USERS ||--o{ JOURNAL_ENTRIES : "writes"
-    USERS ||--o{ ACHIEVEMENT_USER : "earns"
-    ACHIEVEMENTS ||--o{ ACHIEVEMENT_USER : "awarded via"
+    USERS ||--o| CUSTOMER_PROFILES : "has one"
+    USERS ||--o| MERCHANTS : "owns / manages"
+    USERS ||--o{ ORDERS : "places"
+    USERS ||--o{ REVIEWS : "writes"
 
-    CATEGORIES ||--o{ HABITS : "groups"
-    HABITS ||--o{ HABIT_LOGS : "has"
-    HABITS ||--o{ REMINDERS : "has"
-    HABITS ||--o{ HABIT_TAG : "tagged via"
-    TAGS ||--o{ HABIT_TAG : "labels"
+    MERCHANTS ||--o{ MENUS : "offers"
+    MERCHANTS ||--o{ ORDERS : "receives"
+    MERCHANTS ||--o{ REVIEWS : "receives"
 
-    MOOD_ENTRIES ||--o| JOURNAL_ENTRIES : "may have"
+    CATEGORIES ||--o{ MENUS : "classifies"
+    MENUS ||--o{ MENU_TAG : "tagged via"
+    TAGS ||--o{ MENU_TAG : "labels"
+
+    ORDERS ||--o{ ORDER_ITEMS : "contains"
+    MENUS ||--o{ ORDER_ITEMS : "ordered in"
+
+    ORDERS ||--o| REVIEWS : "reviewed via"
 
     USERS {
         bigint id PK
         string name
         string email UK
         string password
+        timestamp created_at
     }
-    PROFILES {
+
+    CUSTOMER_PROFILES {
         bigint id PK
-        bigint user_id FK "unique"
-        text bio
+        bigint user_id FK "UK"
+        string phone_number
         string avatar
-        string timezone
-        int daily_goal
+        text address
+        string city
+        string postal_code
+        text delivery_notes
     }
+
+    MERCHANTS {
+        bigint id PK
+        bigint user_id FK "UK"
+        string store_name
+        string slug UK
+        text description
+        text address
+        string phone_number
+        boolean is_open
+        decimal rating
+    }
+
     CATEGORIES {
         bigint id PK
         string name
         string slug UK
         string icon
-        string color
+        text description
     }
-    HABITS {
+
+    MENUS {
         bigint id PK
-        bigint user_id FK
+        bigint merchant_id FK
         bigint category_id FK
         string name
-        text description
-        int target_count
-        string unit
-        boolean is_active
+        string slug
+        decimal price
+        boolean is_available
+        int preparation_time_minutes
     }
-    HABIT_LOGS {
-        bigint id PK
-        bigint habit_id FK
-        date logged_date
-        int value
-        text note
-    }
+
     TAGS {
         bigint id PK
-        string name UK
+        string name
+        string slug UK
+        string color
     }
-    HABIT_TAG {
-        bigint habit_id FK
+
+    MENU_TAG {
+        bigint id PK
+        bigint menu_id FK
         bigint tag_id FK
     }
-    REMINDERS {
+
+    ORDERS {
         bigint id PK
-        bigint habit_id FK
-        time remind_at
-        json days_of_week
-        boolean is_enabled
-    }
-    MOOD_ENTRIES {
-        bigint id PK
+        string order_code UK
         bigint user_id FK
-        date entry_date
-        tinyint mood_level "1-5"
-        string note
+        bigint merchant_id FK
+        decimal total_amount
+        decimal delivery_fee
+        enum status
+        text delivery_address
+        string payment_method
+        enum payment_status
     }
-    JOURNAL_ENTRIES {
+
+    ORDER_ITEMS {
         bigint id PK
-        bigint user_id FK
-        bigint mood_entry_id FK "nullable"
-        date entry_date
-        string title
-        text content
+        bigint order_id FK
+        bigint menu_id FK
+        int quantity
+        decimal unit_price
+        decimal subtotal
+        string special_notes
     }
-    ACHIEVEMENTS {
+
+    REVIEWS {
         bigint id PK
-        string name
-        text description
-        string criteria
-    }
-    ACHIEVEMENT_USER {
+        bigint order_id FK "UK"
         bigint user_id FK
-        bigint achievement_id FK
-        timestamp earned_at
+        bigint merchant_id FK
+        tinyint rating
+        text comment
+        text merchant_reply
     }
 ```
 
-## 2. Relationship Summary
+---
 
-| Type | Relationship | Eloquent |
-|---|---|---|
-| One-to-One | `User` ↔ `Profile` | `hasOne` / `belongsTo` |
-| One-to-One (optional) | `MoodEntry` ↔ `JournalEntry` | `hasOne` / `belongsTo` |
-| One-to-Many | `User` → `Habit` | `hasMany` / `belongsTo` |
-| One-to-Many | `User` → `MoodEntry` | `hasMany` / `belongsTo` |
-| One-to-Many | `User` → `JournalEntry` | `hasMany` / `belongsTo` |
-| One-to-Many | `Category` → `Habit` | `hasMany` / `belongsTo` |
-| One-to-Many | `Habit` → `HabitLog` | `hasMany` / `belongsTo` |
-| One-to-Many | `Habit` → `Reminder` | `hasMany` / `belongsTo` |
-| Many-to-Many | `Habit` ↔ `Tag` (pivot `habit_tag`) | `belongsToMany` |
-| Many-to-Many + pivot data | `User` ↔ `Achievement` (pivot `achievement_user`, column `earned_at`) | `belongsToMany` + `withPivot` |
-| Has-Many-Through | `User` → `HabitLog` through `Habit` | `hasManyThrough` |
-| Has-Many-Through | `Category` → `HabitLog` through `Habit` | `hasManyThrough` |
+## 2. Pemetaan Relasi Eloquent
 
-## 3. Categories (seeded)
+| Tipe Relasi | Model Asal | Model Tujuan | Keterangan & Metode Eloquent |
+|---|---|---|---|
+| **One-to-One** | `User` | `CustomerProfile` | Satu user memiliki satu profil pelanggan: `$this->hasOne(CustomerProfile::class)` |
+| **One-to-One** | `User` | `Merchant` | Satu user pemilik toko mengelola satu merchant: `$this->hasOne(Merchant::class)` |
+| **One-to-One** | `Order` | `Review` | Setiap pesanan yang selesai hanya dapat diulas satu kali: `$this->hasOne(Review::class)` |
+| **One-to-Many** | `Category` | `Menu` | Kategori mengelompokkan banyak menu: `$this->hasMany(Menu::class)` |
+| **One-to-Many** | `Merchant` | `Menu` | Merchant memiliki banyak pilihan menu: `$this->hasMany(Menu::class)` |
+| **One-to-Many** | `User` | `Order` | Customer dapat membuat banyak pesanan: `$this->hasMany(Order::class)` |
+| **One-to-Many** | `Merchant` | `Order` | Merchant menerima banyak pesanan: `$this->hasMany(Order::class)` |
+| **Many-to-Many** | `Menu` | `Tag` | Menu dapat memiliki banyak label (Halal, Pedas, Best Seller) via `menu_tag` |
+| **Many-to-Many (Pivot Data)** | `Order` | `Menu` | Pesanan mencakup banyak menu via `order_items` dengan atribut pivot: `quantity`, `unit_price`, `subtotal`, `special_notes` |
+| **Has-Many-Through** | `Merchant` | `OrderItem` | Merchant dapat melacak semua item yang terjual melalui menu miliknya: `$this->hasManyThrough(OrderItem::class, Menu::class)` |
+| **Has-Many-Through** | `User` | `OrderItem` | Customer dapat mengakses semua riwayat item makanan yang pernah dibeli melalui order: `$this->hasManyThrough(OrderItem::class, Order::class)` |
 
-The `categories` table is populated by a seeder with the eight built-in themes:
+---
 
-| Name | Slug |
-|---|---|
-| Health & Fitness | `health-fitness` |
-| Mindfulness | `mindfulness` |
-| Productivity | `productivity` |
-| Better Sleep | `better-sleep` |
-| Stay Hydrated | `stay-hydrated` |
-| Read More | `read-more` |
-| Social Connections | `social-connections` |
-| Self Care | `self-care` |
+## 3. Aturan Integritas Data (Constraints)
 
-## 4. Design Notes
-
-- **Unique constraints:** `profiles.user_id`, `categories.slug`, `tags.name`, and (`habit_logs.habit_id`, `habit_logs.logged_date`) so a habit has one log per day.
-- **Daily mood:** (`mood_entries.user_id`, `mood_entries.entry_date`) is unique, giving one mood per user per day.
-- **Journal ↔ mood link:** `journal_entries.mood_entry_id` is nullable and unique, so a journal entry can exist without a mood check-in, but a mood has at most one journal entry.
-- **Cascade rules:** deleting a user cascades to their profile, habits, logs, reminders, moods, journals, and achievement links. Deleting a category is restricted while habits still use it.
-- **Streaks** are computed from `habit_logs` and are not stored.
+1. **Foreign Key Cascade:**
+   - Menghapus `User` akan menghapus `CustomerProfile` dan data pesanan terkait.
+   - Menghapus `Order` akan menghapus rincian `OrderItems` dan `Review`.
+2. **Foreign Key Restrict:**
+   - `Category` tidak dapat dihapus jika masih terdapat `Menu` aktif di dalamnya.
+   - `Menu` tidak dapat dihapus jika pernah tercatat dalam transaksi `OrderItem`.
+3. **Unique Keys:**
+   - `orders.order_code` bersifat unik.
+   - `reviews.order_id` bersifat unik (1 order = 1 review).
+   - Pasangan `[menu_id, tag_id]` pada tabel pivot `menu_tag` bersifat unik.

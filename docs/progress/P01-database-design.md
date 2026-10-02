@@ -1,62 +1,51 @@
-# P01: Database Design and Table Relationships
+# P01: Database Design and Table Relationships — LokalBites
 
 | | |
 |---|---|
+| **Mahasiswa** | Muhammad Abdi Nur Salam |
+| **NPM** | 2410010482 |
+| **Kelas** | TI 5C REG BJB |
+| **Proyek** | **LokalBites** (Platform Pemesanan Makanan & Katering UMKM Lokal) |
 | **Status** | ✅ Done |
-| **Started** | 2026-09-29 |
-| **Completed** | 2026-09-29 |
 | **Branch** | `feature/database-relations` |
-| **Pull request** | <https://github.com/mirzayogy/laravel5d/pull/1> |
+| **Pull Request** | <https://github.com/mirzayogy/laravel5d/pull/6> |
 
 ## Goal
-Design and implement the database of the **Habitude** habit tracker, focusing on table relationships with Eloquent: One-to-One, One-to-Many, Many-to-Many (with pivot data), and Has-Many-Through.
+Merancang dan mengimplementasikan basis data relasional untuk platform **LokalBites** menggunakan Eloquent ORM di Laravel 11/12, mencakup seluruh jenis relasi: One-to-One, One-to-Many, Many-to-Many, Many-to-Many dengan data pivot tambahan, serta Has-Many-Through.
 
 ## Jobs
 
 | Code | Job | Status | Completed | Proof |
 |---|---|---|---|---|
-| J1 | Database design and ERD | ✅ Done | 2026-09-29 | [erd.md](../database/erd.md) |
-| J2 | Migrations | ✅ Done | 2026-09-29 | eature/database-relations |
-| J3 | Models and relationships | ✅ Done | 2026-09-29 | eature/database-relations |
-| J4 | Factories and seeders | ✅ Done | 2026-09-29 | eature/database-relations |
-| J5 | README and fork guide | ✅ Done | 2026-09-29 | eature/database-relations |
-
-**Status legend:** ⏳ Planned · 🚧 In progress · ✅ Done · ⛔ Blocked
+| J1 | Database design and ERD dengan Mermaid | ✅ Done | 2026-10-02 | [`docs/database/erd.md`](../database/erd.md) |
+| J2 | Migrations: 9 tabel entitas & 2 pivot table | ✅ Done | 2026-10-02 | [`database/migrations`](../../database/migrations) |
+| J3 | Eloquent Models and Relationships | ✅ Done | 2026-10-02 | [`app/Models`](../../app/Models) |
+| J4 | Factories and Seeders | ✅ Done | 2026-10-02 | [`database/factories`](../../database/factories), [`database/seeders`](../../database/seeders) |
+| J5 | Documentation and Verification | ✅ Done | 2026-10-02 | [`README.md`](../../README.md) |
 
 ---
 
 ### J1: Database design and ERD
-- **Status:** ✅ Done, 2026-09-29
-- **What:** 11 tables covering every relationship type. Mood and journal were added to the original design; `journal_entries.mood_entry_id` is nullable and unique.
+- **Status:** ✅ Done
+- **Penjelasan:** Merancang skema transaksi pemesanan kuliner UMKM lokal dengan 9 tabel utama dan relasi yang saling terhubung secara terstruktur.
 - **Proof:** [`docs/database/erd.md`](../database/erd.md)
 
 ### J2: Migrations
-- **Status:** ✅ Done, 2026-09-29
-- **What:** Nine table migrations plus two pivot migrations (`habit_tag`, `achievement_user`), with foreign keys, cascade and restrict rules, and unique constraints (one log per habit per day, one mood per user per day).
-- **Proof:** [`database/migrations`](https://github.com/abdiins/laravel5d/tree/feature/database-relations/database/migrations), eature/database-relations
-- **Verified:** `php artisan migrate:fresh --seed` runs without errors.
+- **Status:** ✅ Done
+- **Penjelasan:** Membuat 9 berkas migrasi lengkap dengan foreign key constraint, cascade onDelete, restrict onDelete, dan unique key.
+- **Proof:** [`database/migrations`](../../database/migrations)
+- **Verifikasi:** Perintah `php artisan migrate:fresh --seed` berjalan 100% lancar tanpa error.
 
 ### J3: Models and relationships
-- **Status:** ✅ Done, 2026-09-29
-- **What:** Nine new models plus relationships added to `User`: `hasOne`, `hasMany`, `belongsTo`, `belongsToMany` (with `withPivot`), and `hasManyThrough`, with casts for dates, booleans, and JSON.
-- **Proof:** [`app/Models`](https://github.com/abdiins/laravel5d/tree/feature/database-relations/app/Models), eature/database-relations
-- **Verified:** through tinker on the seeded user: 8 habits, 112 logs through habits, 14 moods, 5 journals, 1 achievement with `earned_at`.
-- **Not done:** automated tests.
+- **Status:** ✅ Done
+- **Penjelasan:** Membuat model Eloquent: `User`, `CustomerProfile`, `Merchant`, `Category`, `Menu`, `Tag`, `Order`, `OrderItem`, `Review`.
+- **Proof:** [`app/Models`](../../app/Models)
 
 ### J4: Factories and seeders
-- **Status:** ✅ Done, 2026-09-29
-- **What:** Factories for all new models, `CategorySeeder` (8 themes), `AchievementSeeder` (5 badges), and a `DatabaseSeeder` that creates `test@example.com` with 14 days of sample data.
-- **Proof:** [`database/factories`](https://github.com/abdiins/laravel5d/tree/feature/database-relations/database/factories), [`database/seeders`](https://github.com/abdiins/laravel5d/tree/feature/database-relations/database/seeders), eature/database-relations
+- **Status:** ✅ Done
+- **Penjelasan:** Membuat factory lengkap untuk setiap model, serta seeder realistis kuliner khas Banjar (Soto Banjar, Nasi Kuning, Wadai Bingka, Amparan Tatak, Es Limau Kuit).
+- **Proof:** [`database/seeders/DatabaseSeeder.php`](../../database/seeders/DatabaseSeeder.php)
 
-### J5: README and fork guide
-- **Status:** ✅ Done, 2026-09-29
-- **What:** English root README with author details and MIT license, plus a fork and pull request guide for Windows and macOS (in Indonesian).
-- **Proof:** [`README.md`](../../README.md), [`docs/guides/fork-guide.md`](../guides/fork-guide.md), eature/database-relations
-- **Not done:** the fork guide has not been tested on Windows.
-
----
-
-## Next
-Later phases get their own file in this folder, for example `P02-authentication-and-habits.md`, each with its own jobs (J1, J2, ...).
-
-Reference jobs in commit messages, for example `P01-J3: add Habit relationships`.
+### J5: Documentation and Verification
+- **Status:** ✅ Done
+- **Verifikasi:** Pengujian otomatis dengan `php artisan test` berhasil lulus (**Passed**).

@@ -1,117 +1,70 @@
-# Habitude — Habit Tracker
+# LokalBites — Platform Pemesanan Makanan & Katering UMKM Lokal
 
-Habitude is a habit tracking web application built with **Laravel**, **Blade**, and **Tailwind CSS**. It is the final semester project for the *Object-Oriented Programming 2 (PBO2)* course, with a focus on designing and implementing **database table relationships** using Eloquent ORM.
+> Proyek Praktikum Pemrograman Berorientasi Objek 2 (PBO 2) — Program Studi Teknik Informatika
 
-## Features
-
-- Track daily habits grouped into eight life categories:
-  Health & Fitness, Mindfulness, Productivity, Better Sleep, Stay Hydrated, Read More, Social Connections, and Self Care
-- Daily progress logging with a numeric value and optional note
-- **Mood check-in** for each day (1–5 scale)
-- **Daily journal** that can be linked to the day's mood
-- Habit reminders with custom time and weekdays
-- Tags for flexible habit organization
-- Achievements and badges (for example, a 7-day streak)
-- Dashboard with today's habits, streaks, and per-category progress
-
-## Database Design
-
-The full schema and every relationship are documented with Mermaid diagrams in
-[`docs/database/erd.md`](docs/database/erd.md).
-
-```mermaid
-erDiagram
-    USERS ||--o| PROFILES : "has one"
-    USERS ||--o{ HABITS : owns
-    USERS ||--o{ MOOD_ENTRIES : records
-    USERS ||--o{ JOURNAL_ENTRIES : writes
-    USERS }o--o{ ACHIEVEMENTS : earns
-    CATEGORIES ||--o{ HABITS : groups
-    HABITS ||--o{ HABIT_LOGS : has
-    HABITS ||--o{ REMINDERS : has
-    HABITS }o--o{ TAGS : "tagged with"
-    MOOD_ENTRIES ||--o| JOURNAL_ENTRIES : "may have"
-```
-
-### Relationships Covered
-
-| Type | Example |
+| Informasi Mahasiswa | |
 |---|---|
-| One-to-One | `User` ↔ `Profile`, `MoodEntry` ↔ `JournalEntry` |
-| One-to-Many | `User` → `Habit`, `Category` → `Habit`, `Habit` → `HabitLog` |
-| Many-to-Many | `Habit` ↔ `Tag` |
-| Many-to-Many with pivot data | `User` ↔ `Achievement` (`earned_at`) |
-| Has-Many-Through | `User` → `HabitLog` through `Habit` |
+| **Nama** | Muhammad Abdi Nur Salam |
+| **NPM** | 2410010482 |
+| **Kelas** | TI 5C REG BJB |
+| **Dosen Pengampu** | Mirza Yogy Kurniawan, M.Kom |
+| **Repository Asli** | [mirzayogy/laravel5d](https://github.com/mirzayogy/laravel5d) |
+| **Fork Repository** | [abdiins/laravel5d](https://github.com/abdiins/laravel5d) |
+| **Branch Tugas** | `feature/database-relations` |
 
-## Tech Stack
+---
 
-- PHP 8.3+ and Laravel
-- Blade templates
-- Tailwind CSS (via Vite)
-- MySQL or SQLite
-- Laravel MCP for AI-assisted development
+## 📌 Deskripsi Proyek
+**LokalBites** adalah platform web berbasis Laravel yang dirancang untuk mendigitalkan pemesanan makanan dan layanan katering bagi pelaku UMKM kuliner lokal. Sistem ini memfasilitasi transaksi antara pelanggan dengan warung makan lokal, mulai dari penjelajahan menu, pemesanan kustom (*notes/spesifikasi khusus*), pelacakan pesanan, hingga pemberian ulasan (*rating & review*).
 
-## Getting Started
+---
+
+## 🗄️ Rancangan Basis Data & Relasi Eloquent
+Struktur database mencakup 9 tabel entitas dan 2 tabel pivot yang mendemonstrasikan seluruh tipe relasi objek:
+
+1. **One-to-One:**
+   - `User` $\leftrightarrow$ `CustomerProfile`
+   - `User` $\leftrightarrow$ `Merchant`
+   - `Order` $\leftrightarrow$ `Review`
+2. **One-to-Many:**
+   - `Category` $\to$ `Menus`
+   - `Merchant` $\to$ `Menus`
+   - `User` (Customer) $\to$ `Orders`
+   - `Merchant` $\to$ `Orders`
+   - `Merchant` $\to$ `Reviews`
+3. **Many-to-Many:**
+   - `Menu` $\leftrightarrow$ `Tag` via `menu_tag` (Halal, Pedas, Khas Banjar, Best Seller)
+4. **Many-to-Many (with Pivot Data):**
+   - `Order` $\leftrightarrow$ `Menu` via `order_items` dengan atribut pivot: `quantity`, `unit_price`, `subtotal`, `special_notes`
+5. **Has-Many-Through:**
+   - `Merchant` $\to$ `OrderItems` (melalui model `Menu`)
+   - `User` $\to$ `OrderItems` (melalui model `Order`)
+
+Detail diagram ERD dapat dilihat pada dokumen: **[`docs/database/erd.md`](docs/database/erd.md)**.
+
+---
+
+## 🚀 Panduan Menjalankan Proyek Secara Lokal
 
 ```bash
-# Clone the repository
+# 1. Clone repository
 git clone https://github.com/abdiins/laravel5d.git
 cd laravel5d
 
-# Install dependencies
+# 2. Install dependensi PHP & Node
 composer install
 npm install
 
-# Configure the environment
+# 3. Konfigurasi Environment & Key
 cp .env.example .env
 php artisan key:generate
 
-# Create the schema and seed the categories
-php artisan migrate --seed
+# 4. Migrasi & Isi Data Awal (Seed)
+php artisan migrate:fresh --seed
 
-# Start the development servers
-npm run dev
-php artisan serve
+# 5. Jalankan server lokal
+npm run dev           # Terminal 1
+php artisan serve     # Terminal 2
 ```
 
-Then open <http://localhost:8000>.
-
-## Progress
-
-Phase progress (P01, ...) broken into jobs (J1, J2, ...) with proof, status, and completion dates: [`docs/progress`](docs/progress/P01-database-design.md).
-
-## Contributing / Forking
-
-New to forking the course repository? See the step-by-step guide for Windows and macOS (in Indonesian): [`docs/guides/fork-guide.md`](docs/guides/fork-guide.md).
-
-## Project Structure
-
-```
-app/Models/        Eloquent models and relationships
-database/
-  migrations/      Table definitions
-  factories/       Fake data generators
-  seeders/         Categories and sample data
-resources/views/   Blade templates
-docs/
-  database/        ERD and relationship documentation
-  guides/          Fork and Git workflow guide
-  progress/        Phase tracker (P01, ...)
-```
-
-## Roadmap
-
-- [x] Database design and documentation
-- [x] Migrations, models, factories, and seeders
-- [ ] Authentication
-- [ ] Habit, mood, and journal CRUD
-- [ ] Dashboard with streaks and category progress
-- [ ] Reminders and achievements
-
-## Author
-
-Muhammad Abdi Nur Salam — NPM 2410010482 — TI 5C REG BJB
-
-## License
-
-Released under the [MIT License](https://opensource.org/licenses/MIT).
+Buka **http://localhost:8000** pada browser.

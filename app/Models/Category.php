@@ -2,24 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-#[Fillable(['name', 'slug', 'icon', 'color'])]
 class Category extends Model
 {
     use HasFactory;
 
-    public function habits(): HasMany
+    protected $fillable = [
+        'name',
+        'slug',
+        'icon',
+        'description',
+    ];
+
+    public function menus(): HasMany
     {
-        return $this->hasMany(Habit::class);
+        return $this->hasMany(Menu::class);
     }
 
-    public function habitLogs(): HasManyThrough
+    public function orderItems(): HasManyThrough
     {
-        return $this->hasManyThrough(HabitLog::class, Habit::class);
+        return $this->hasManyThrough(OrderItem::class, Menu::class);
     }
 }

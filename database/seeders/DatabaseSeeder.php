@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // 0. Seed Periode from upstream
+        $this->call(PeriodeSeeder::class);
+
         // 1. Seed Categories
         $this->call(CategorySeeder::class);
         $categories = Category::all();

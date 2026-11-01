@@ -9,9 +9,7 @@ use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
 
-Route::get('/', function () {
-    return redirect()->route('admin.dashboard');
-});
+Route::get('/', [DashboardController::class, 'index'])->name('home');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

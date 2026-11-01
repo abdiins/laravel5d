@@ -309,6 +309,23 @@ Open your browser and navigate to **`http://localhost:8000`**.
 
 ---
 
+## 🖥️ Web Admin Dashboard & CRUD Operations
+
+LokalBites includes an interactive **SB Admin 2** inspired management dashboard accessible at **`http://localhost:8000`** (or `/admin/dashboard`). It provides full CRUD operations for managing models and visualizing relational data:
+
+| Route URI | Name | Description |
+|---|---|---|
+| `/` or `/admin/dashboard` | `admin.dashboard` | Overview analytics, store counts, active items, and recent orders. |
+| `/admin/categories` | `admin.categories.index` | Category management (List, Create, Edit, Delete). |
+| `/admin/merchants` | `admin.merchants.index` | Merchant storefront management (Owner link, operating status, rating, phone). |
+| `/admin/menus` | `admin.menus.index` | Menu catalog management (Pricing, preparation time, category, dietary tags). |
+| `/admin/tags` | `admin.tags.index` | Dietary and promotional badge management with custom color tags. |
+| `/admin/orders` | `admin.orders.index` | Order monitoring, payment status tracking, and line item breakdown. |
+| `/admin/orders/{id}` | `admin.orders.show` | Detailed order invoice view with customer details and line items. |
+| `/admin/reviews` | `admin.reviews.index` | Customer ratings, reviews, and merchant response management. |
+
+---
+
 ## 🧪 Verification & Relationship Testing
 
 You can verify all Eloquent relationships directly using Laravel Tinker:
